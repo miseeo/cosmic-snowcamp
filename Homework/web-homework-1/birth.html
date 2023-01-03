@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			#number{
+				width: 180px;
+				height: 20px;
+			}
+
+			button{
+				cursor: pointer;
+				width: 60px;
+				height: 25px;
+			}
+		</style>
+	</head>
+	<body>
+		<h2>생일 출력하기</h2>
+		<h4>0. 박정현 1. 복무창 2. 오민석 3. 한규원 4. 김도영 5. 김준호 6. 문희범</h4>
+		<input id="number" type="text" placeholder="번호를 입력하세요">
+		<button type="button" onclick="idCheck()"> 출력 </button>
+		<div style="padding: 7px"></div>
+		<div id="result" style="font-size: 15px"></div>
+		<script>
+			function idCheck(){
+				let id = document.getElementById("number").value;
+				fetch(`https://my-json-server.typicode.com/smashh712/json_placeholder/members/${id}`)
+					.then((res) => res.json())
+					.then((res) => {
+					if(!res.name){
+						document.getElementById('result').innerHTML='존재하지 않음'
+					}
+					if(res){
+						document.getElementById('result').innerHTML = `${res.name}님의 생일은 ${res.birth[0]}${res.birth[1]}년 ${res.birth[2]}${res.birth[3]}월 ${res.birth[4]}${res.birth[5]}일입니다.`
+					}
+					})
+			}
+		</script>
+	</body>
+</html>
