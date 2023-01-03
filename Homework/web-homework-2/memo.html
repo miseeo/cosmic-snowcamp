@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	<style>
+		[type="text"]{
+			margin-left: 10px;
+			width: 750px;
+			height: 30px;
+		}
+		
+		#date{
+			width: 900px;
+			height: 25px;
+			border-radius: 4px;
+			font-size: 14px;
+		}
+		
+		#note{
+			margin-left: 10px;
+			padding-top: 5px;
+			height: 100px;
+			padding-left: 5px;
+		}
+		
+		#memo{
+			margin-left: 10px;
+		}
+
+		#delete, #submit{
+			width: fit-content;
+			height: 25px;
+			padding-top: 0;
+			padding-bottom: 0;
+			font-size: 13px;
+		}
+
+		#delete{
+			margin-left: 10px;
+		}
+		
+		#memo{
+			width: 900px;
+			border: 0.1px solid rgb(177, 177, 177);
+			border-radius: 4px;
+			font-size: 14px;
+		}
+	</style>
+</head>
+<body>
+	<div class="form-check" style="margin-left: 10px;">
+		<input class="form-check-input" type="radio" name="color" id="pink" value="pink">
+		<label class="form-check-label" for="pink">
+		  Pink
+		</label>
+	</div>
+	<div class="form-check" style="margin-left: 10px;">
+		<input class="form-check-input" type="radio" name="color" id="skyblue" value="skyblue">
+		<label class="form-check-label" for="skyblue">
+			Blue
+		</label>
+	</div>
+
+	<div style="padding: 6px"></div>
+	<input id="insert" type="text" placeholder="내용을 입력하세요.">
+	<button type="button" id="submit" style="border: 0.1px solid black" onclick="submit(); getColor(event);"> 저장 </button>
+	<div style="padding: 5px"></div>
+	<div id="wrapper"></div>
+
+	<script>
+		function submit(){
+			var radio = document.querySelector('input[type=radio][name=color]:checked');
+			const memo = document.getElementById('insert').value;
+		
+			if(!memo){
+				alert("내용을 입력하세요.");
+			}
+			else if(!radio){
+				alert("색상을 선택해주세요.");
+			}
+			else{
+				const parent = document.getElementById('wrapper');
+				const newDate = document.createElement('div');
+				const newNote = document.createElement('div');
+				const getColor = document.getElementsByName('color');
+				const deleteButton = document.createElement('button');
+				let note = document.createElement('div');
+
+				note.id = 'memo';
+				newDate.id = 'date';
+				newNote.id = 'note';
+
+				getColor.forEach((color) => {
+					if(color.checked) {
+						newDate.style.backgroundColor = color.value;
+					}
+				})
+				
+				var date = new Date();
+				newDate.innerHTML = date.toString();
+				newNote.innerHTML = memo;
+
+				deleteButton.setAttribute('class', 'btn btn-primary')
+				deleteButton.id = 'delete';
+				deleteButton.innerHTML = '삭제';
+				deleteButton.onclick = function(){
+					var d = this.parentElement;
+					d.remove();
+				}
+				note.appendChild(newDate);
+				note.appendChild(newNote);
+				note.appendChild(deleteButton);
+				note.appendChild(document.createElement('p'))
+
+				parent.appendChild(note);
+				document.getElementById('insert').value = null;
+				radio.checked = false;
+			}
+		}
+	</script>
+</body>
+</html>
