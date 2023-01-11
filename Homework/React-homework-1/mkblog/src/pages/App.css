@@ -5,7 +5,7 @@
 }
 
 .App{
-  padding-top: 8%;
+  padding-top: 140px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -43,4 +43,13 @@ button{
   font-size: 12px;
   margin-top: 20px;
   margin-right: 13px;
+}
+
+.mainImage{
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 8%;
+  right: 5%;
+  border-radius: 50%;
 }

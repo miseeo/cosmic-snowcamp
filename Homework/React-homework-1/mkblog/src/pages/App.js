@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import {Routes, Route, useNavigate} from 'react-router-dom';
 
 function dataLoad() {
   const items = [
@@ -56,33 +57,37 @@ function Card(props) {
         <div className='text' style={{margin: 'auto', width: '300px', height: '150px', textAlign: 'left'}}>
           <div style={{fontSize:'17px', paddingBottom: '9px'}}>{props.name}</div>
           <div style={{fontSize:'15px', color: 'grey'}}>{props.children} </div>
+          <div style={{paddingTop:'5px', fontSize:'8px', color: 'grey'}}>{props.date}</div>
         </div>
       </Col>
     </div>
   );
 }
 
-function Info() {
+function Main() {
   return(
-    <div>
-        <div style={{fontSize: '26px'}}>박재성</div>
-        <div style={{color: 'grey', fontSize: '15px', paddingTop: '7px'}}>넥스트스텝 CEO</div>
+      <div style={{textAlign: 'left',}}>
+        <img className="mainImage" src="https://img1.daumcdn.net/thumb/C500x500.fjpg/?fname=http://t1.daumcdn.net/brunch/service/guest/image/V4wdZX1aq-c_w0D7_taGTXkIgrk"></img>
+        <div>
+          <div style={{fontSize: '26px'}}>박재성</div>
+          <div style={{color: 'grey', fontSize: '15px', paddingTop: '7px'}}>넥스트스텝 CEO</div>
+        </div>        
         <div style={{padding: '14px'}}></div>
-        <div style={{flexDirection: 'row', justifyContent: 'center'}}>
-          <div>
+        <Row>
+          <Col xs={2}>
             <div style={{color: 'grey', fontSize: '14px'}}>구독자 </div>
-            <div style={{color: 'grey', fontSize: '20px'}}>1,270</div>
-          </div>
-          <div>
+            <div style={{color: 'grey', fontSize: '22px'}}>1,270</div>
+          </Col>
+          <Col xs={2}>
             <div style={{color: 'grey', fontSize: '14px'}}>관심작가 </div>
-            <div style={{color: 'grey', fontSize: '20px'}}>26</div>
-          </div>
-        </div>
-    </div>
+            <div style={{color: 'grey', fontSize: '22px'}}>26</div>
+          </Col>
+        </Row>
+      </div>
   )
 }
 
-function Intro() {
+function Inform() {
   return(
     <div style={{fontSize: '13px', color: 'grey'}}>
       <div>소개</div>
@@ -103,17 +108,16 @@ function Tag(props) {
 }
 
 function App() {
-  let [writingBtn, setWriting] = useState(false);
-  let [infoBtn, setInfo] = useState(true);
-  let [workBtn, setWork] = useState(false);
+  let [btn, setBtn] = useState([0, 0, 0]);
 
   var arr = [1, 2, 3];
   let result = null;
+  let navigate = useNavigate()
 
-  if(writingBtn || workBtn){
+  if(btn[0] == 0){
     let loadedData = null
 
-    if(writingBtn){
+    if(btn[1] == 1){
       loadedData = dataLoad();
     }
 
@@ -124,7 +128,7 @@ function App() {
     result = arr.map((a, i) => {
     return (
       <Col xs={6}>
-        <Card name={loadedData[i].title} image={loadedData[i].src}>
+        <Card name={loadedData[i].title} image={loadedData[i].src} date={loadedData[i].createDate}>
           {loadedData[i].preview}
         </Card>
       </Col>
@@ -133,39 +137,43 @@ function App() {
   };
 
   return (
-    <div ClassName="Wrapper">
+    <div className="Wrapper">
         <div className="App">
           <div>
-            <Info/>
+            <Main/>
           </div>
+          <div className="pad"></div>
           <div className="pad"></div>
           <Row className="justify-content-center">
             <button
               onClick={() => {
-                setInfo(true)
-                setWriting(false)
-                setWork(false)
-              }}> 작가소개 </button>
+                setBtn([1, 0, 0])
+                navigate('/inform')
+              }}> 
+            작가소개 
+            </button>
+
             <button
               onClick={() => {
-                setWriting(true)
-                setInfo(false)
-                setWork(false)
-              }}
-            >
+                setBtn([0, 1, 0])
+                navigate('/writing')
+              }}>
               글 {arr.length}
             </button>
+
             <button
               onClick={() => {
-                setWork(true)
-                setInfo(false)
-                setWriting(false)
+                setBtn([0, 0, 1])
+                navigate('/work')
               }}> 작품 </button>
           </Row>
           <div className="pad"></div>
-          <div className="content">
-            {infoBtn == false ? <Row md={2}>{result}</Row> : <Intro/>}
-          </div>
+          <Routes>
+            <Route path="/"></Route>
+            <Route path="/inform" element={<div className="content"><Inform/></div>}></Route>
+            <Route path="/writing" element={<Row md={2}>{result}</Row>}></Route>
+            <Route path="/work" element={<Row md={2}>{result}</Row>}></Route>
+          </Routes>
         </div>
     </div>
   );
