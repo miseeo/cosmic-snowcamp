@@ -1,5 +1,5 @@
 import './App.css';
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import axios from 'axios';
 import PieChartComponent from './piechartComponent';
 import { PieChart, Pie } from 'recharts';
@@ -16,9 +16,10 @@ function App() {
   let [result, setResult] = useState([])
   let [input, setInput] = useState('')
   let [data, setData] = useState([])
-  let [click, setClick] = useState(false)
+  let [loading, setLoading] = useState(false)
 
   let navigate = useNavigate()
+  let nav = ''
 
   const reset = () => {
     setInput('')
@@ -34,28 +35,30 @@ function App() {
     { name: '지방', value: parseInt(data[4] * 9) },
     { name: '당류', value: parseInt(data[5] * 4) },
   ];
-
+  
   async function getData() {
     try {
       const url = 'http://openapi.foodsafetykorea.go.kr/api/' + key + '/I2790/json/1/10/DESC_KOR=' + input
-      console.log('검색중')
       const response = await axios.get(url);
       const temp = response.data.I2790.row
       setResult(temp)
-      console.log(temp)
     } catch (error) {
       console.error(error);
     }
-    console.log('검색끝')
   }
 
   function getNUTR(r) {
-    setData([r.DESC_KOR, r.NUTR_CONT1, r.NUTR_CONT2, r.NUTR_CONT3, r.NUTR_CONT4, r.NUTR_CONT5])
+    setData([r.NUM, r.DESC_KOR, r.NUTR_CONT1, r.NUTR_CONT2, r.NUTR_CONT3, r.NUTR_CONT4, r.NUTR_CONT5])
   }
+
+  useEffect(() => {
+    nav = '/detail/' + String(data[0])
+    navigate(nav)
+  }, [data])
 
   const listItems = result.map(a => (
     <p className="card">
-      <div onClick={() => {getNUTR(a); setClick(true); navigate('/detail')}}>{a.DESC_KOR}</div>
+      <div onClick={() => {getNUTR(a);}}>{a.DESC_KOR}</div>
     </p>
   ))
 
@@ -63,17 +66,15 @@ function App() {
     <div className="App">
       <h1>식품 영양정보 검색</h1>
       <input onChange={onChange} value={input}></input>
-      <button onClick={()=>{getData(); reset(); setData([]); setClick(false); navigate('/')}}>검색</button>
-      <div>{listItems}</div>
+      <button onClick={()=>{getData(); reset(); navigate('/searchlist')}}>검색</button>
       <Routes>
-        <Route path="/"></Route>
-        <Route path="/detail" element={click == true ?
+        <Route path="/searchlist" element={<div>{listItems}</div>}/>
+        <Route path="/detail/:NUM" element={
           <div>
-            <h1>{data[0]}</h1>
-            <h2>1회 섭취량당 칼로리 {data[1]}</h2>
+            <h1>{data[1]}</h1>
+            <h2>1회 섭취량당 칼로리 {data[2]}</h2>
             <div>{PieChartComponent(nutr)}</div>
-          </div>
-          : null}></Route>
+          </div>}/>
       </Routes>
     </div>
   );
