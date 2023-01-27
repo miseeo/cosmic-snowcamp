@@ -38,6 +38,7 @@ function App() {
   
   async function getData() {
     try {
+      setLoading(true)
       const url = 'http://openapi.foodsafetykorea.go.kr/api/' + key + '/I2790/json/1/10/DESC_KOR=' + input
       const response = await axios.get(url);
       const temp = response.data.I2790.row
@@ -45,20 +46,18 @@ function App() {
     } catch (error) {
       console.error(error);
     }
+    setLoading(false)
   }
 
   function getNUTR(r) {
     setData([r.NUM, r.DESC_KOR, r.NUTR_CONT1, r.NUTR_CONT2, r.NUTR_CONT3, r.NUTR_CONT4, r.NUTR_CONT5])
   }
 
-  useEffect(() => {
-    nav = '/detail/' + String(data[0])
-    navigate(nav)
-  }, [data])
+  if (loading) return (<div>로딩중</div>)
 
-  const listItems = result.map(a => (
+  const listItems = result.map((a, i) => (
     <p className="card">
-      <div onClick={() => {getNUTR(a);}}>{a.DESC_KOR}</div>
+      <div onClick={() => {getNUTR(a); navigate('/detail/'+i)}}>{a.DESC_KOR}</div>
     </p>
   ))
 
